@@ -7,14 +7,43 @@ class Encryption
 {
 private:
 	std::vector <int> m_Fib;
-	std::string* m_message = nullptr;
+	std::vector <int> m_key;
+	std::string m_message = "";
 	bool m_flag = 1;
 	int num = 0;
 
+	std::vector <std::string> processing_message(std::string message)
+	{
+		std::string temp,s;
+		m_message = message;
+		std::string word = "";
+		std::vector <std::string> words;
+		//std::cout << "Input message: ";
+		//std::cin >> s;
+		//m_message = "my Ivan. is Hello, name";
 
-	std::vector <int> InputKey(int num)
+		for (int i = 0; i < m_message.size(); i++)
+		{
+			if (m_message[i] != ' ')
+				word += m_message[i];
+			else
+			{
+				words.push_back(word);
+				word = "";
+			}
+			if (i == m_message.size()-1)
+			words.push_back(word);
+		}
+		return words;
+	}
+public:
+	Encryption(){}
+
+	void InputKey()
 	{
 		std::vector <int> key;
+		std::cout << "Input key len: ";
+		std::cin >> num;
 		std::cout << "Input key through \"Enter\": ";
 		for (int i = 0; i < num; i++)
 		{
@@ -25,36 +54,11 @@ private:
 			else
 				key.push_back(num);
 		}
-		return key;
+		m_key = key;
 	}
-
-	std::vector <std::string> InputMessage()
-	{
-		std::string temp,s;
-		std::string word = "";
-		std::vector <std::string> words;
-		std::cout << "Print message: ";
-		//std::cin >> s;
-		temp = "my Ivan. is Hello, name";
-
-		for (int i = 0; i < temp.size(); i++)
-		{
-			if (temp[i] != ' ')
-				word += temp[i];
-			else
-			{
-				words.push_back(word);
-				word = "";
-			}
-			if (i == temp.size()-1)
-			words.push_back(word);
-		}
-		return words;
-	}
-public:
-	Encryption(){}
 
 	void create_Fib(int num) {
+		m_Fib.clear();
 		m_Fib.push_back(1);
 		m_Fib.push_back(2);
 		for (int i = 2; i < num; i++)
@@ -74,7 +78,7 @@ public:
 
 	void print_vector(std::vector <int> vec) {
 		for (int i = 0; i < vec.size(); i++) {
-			std::cout << vec[i];
+			std::cout << vec[i]<< " ";
 		}
 		std::cout << std::endl;
 		
@@ -89,14 +93,12 @@ public:
 		return message[0];
 	}
 
-	std::string encode()
+	std::string encode(std::string messages)
 	{
-		int temp, num;
-		std::cout << "Input key len: ";
-		std::cin >> num;
-		create_Fib(num);
-		std::vector <int> key = InputKey(num);
-		std::vector <std::string> message = InputMessage();
+		int temp;
+		create_Fib(m_key.size());
+		std::vector <int> key = m_key;
+		std::vector <std::string> message = processing_message(messages);
 
 		if (Error(key, message) != "")
 		{
@@ -118,14 +120,12 @@ public:
 
 	}
 
-	std::string decode()
+	std::string decode(std::string messages)
 	{
-		int temp, num;
-		std::cout << "Input key len: ";
-		std::cin >> num;
-		create_Fib(num);
-		std::vector <int> key = InputKey(num);
-		std::vector <std::string> message = InputMessage();
+		int temp;
+		create_Fib(m_key.size());
+		std::vector <int> key = m_key;
+		std::vector <std::string> message = processing_message(messages);
 
 		if (Error(key, message) != "")
 		{
@@ -170,7 +170,16 @@ public:
 
 int main()
 {
+	std::string str,res;
+	
 	Encryption code1;
-	std::cout << code1.decode() << std::endl;
+	std::cout << "Input message: ";
+	std::getline(std::cin, str);
+	code1.InputKey();
+	res = code1.encode(str);
+	std::cout << "encode message: " << res << std::endl;
+	std::cout << "decode message: " << code1.decode(res)<< std::endl;
+	
+	
 
 }
